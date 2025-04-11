@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин кроссовок</title>
+    <script src="load.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .sneakers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .sneaker-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .sneaker-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .sneaker-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .sneaker-info {
+            padding: 15px;
+        }
+        
+        .brand {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .model {
+            color: #666;
+            margin: 5px 0;
+        }
+        
+        .category {
+            color: #3498db;
+            font-size: 14px;
+        }
+        
+        .price {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    
+    <main>
+        <div class="container">
+            <div class="sneakers-grid" id="sneakersContainer">
+                <!-- Товары будут загружены через JavaScript -->
+            </div>
+        </div>
+    </main>
+    
+    <div id="footer"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загрузка списка кроссовок
+            fetch('/api/sneakers')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('sneakersContainer');
+                    
+                    if (data.error) {
+                        container.innerHTML = `<div class="error">${data.error}</div>`;
+                        return;
+                    }
+                    
+                    if (data.length === 0) {
+                        container.innerHTML = '<div>Нет товаров для отображения</div>';
+                        return;
+                    }
+                    
+                    let html = '';
+                    data.forEach(sneaker => {
+                        html += `
+                            <div class="sneaker-card">
+                                <img src="${sneaker.image_path}" alt="${sneaker.brand} ${sneaker.model}" class="sneaker-image">
+                                <div class="sneaker-info">
+                                    <div class="brand">${sneaker.brand}</div>
+                                    <div class="model">${sneaker.model}</div>
+                                    <div class="category">${sneaker.category}</div>
+                                    <div class="price">${sneaker.price.toFixed(2)} ₽</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+</html>

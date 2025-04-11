@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пример с Header и Footer</title>
+    <script src="load.js" defer></script> <!-- Подключение JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style/oform_zakaz.css">
+</head>
+<body>
+    <div id="header"></div> <!-- Место для заголовка -->   
+    <main>
+        <div class="container">
+
+            <div class="order-box">
+                <img src="woman_photo/4.jpg" alt="Кроссовки PUMA Milenio Tech V1">
+                <div class="order-details">
+                    <p><strong>Кроссовки PUMA Milenio Tech V1</strong></p>
+                    <p>5 999 ₽</p>
+                </div>
+            </div>
+
+            <div class="order-summary">
+                <p><strong>Всего:</strong> 1 товар</p>
+                <p><strong>Сумма:</strong> 5 999 ₽</p>
+                <p><strong>Дата выдачи:</strong> 1 февраля</p>
+            </div>
+
+            <div class="delivery-options">
+                <label><input type="radio" name="delivery" checked> Пункт выдачи</label>
+                <label><input type="radio" name="delivery"> Курьер</label>
+            </div>
+
+            <a href="#" class="button">Оплатить на сайте</a>
+        </div>
+    </main>
+    <div id="footer"></div> <!-- Место для заголовка -->   
+    
+</body>
+</html>

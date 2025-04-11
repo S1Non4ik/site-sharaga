@@ -1,0 +1,58 @@
+<header>
+    <div class="logo">JustSneakers</div>
+    <div class="gender-links">
+        <a href="1_women.html">Женщинам</a>
+        <a href="1_man.html">Мужчинам</a>
+    </div>
+    <div class="icons">
+        <a href="1_favorites.html"><i class="fa fa-heart"></i></a>
+        <a href="1_buscket.html"><i class="fa fa-shopping-cart"></i></a>
+        <a href="reg.html" onclick="countUser (); return false;"><i class="fa fa-user"></i></a>
+    </div>
+</header>
+<style>
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background-color: #fff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+    .gender-links a:hover {
+        color: #3498db;
+    }
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #000;
+    }
+    .icons {
+        display: flex;
+        gap: 15px;
+    }
+    .icons a {
+        text-decoration: none;
+        color: #333;
+        font-size: 20px;
+    }
+    .icons a:hover {
+        color: #3498db;
+    }
+    .gender-links {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .gender-links a {
+        text-decoration: none;
+        color: #000;
+        font-size: 16px;
+        margin: 0 10px;
+        font-weight: bold;
+    }
+    .gender-links a:hover {
+        color: #3498db;
+    }
+</style>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - Добавление товаров</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        .admin-panel {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .add-form {
+            flex: 1;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .products-list {
+            flex: 1;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .product-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .product-info {
+            flex: 1;
+        }
+        
+        .product-brand {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .product-model {
+            color: #666;
+            margin: 5px 0;
+        }
+        
+        .product-price {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .message {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Админ-панель - Добавление кроссовок</h1>
+        
+        <div class="admin-panel">
+            <div class="add-form">
+                <h2>Добавить новый товар</h2>
+                <div id="message"></div>
+                
+                <form id="addSneakerForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="brand">Бренд:</label>
+                        <input type="text" id="brand" name="brand" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="model">Модель:</label>
+                        <input type="text" id="model" name="model" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Категория:</label>
+                        <select id="category" name="category" required>
+                            <option value="Мужские кроссовки">Мужские кроссовки</option>
+                            <option value="Женские кроссовки">Женские кроссовки</option>
+                            <option value="Детские кроссовки">Детские кроссовки</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="price">Цена:</label>
+                        <input type="number" id="price" name="price" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Описание:</label>
+                        <textarea id="description" name="description"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="image">Изображение:</label>
+                        <input type="file" id="image" name="image" accept="image/*" required>
+                    </div>
+                    
+                    <button type="submit">Добавить товар</button>
+                </form>
+            </div>
+            
+            <div class="products-list">
+                <h2>Последние добавленные товары</h2>
+                <div id="productsContainer">
+                    <div class="loading">Загрузка товаров...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загрузка списка товаров
+            loadProducts();
+            
+            // Обработка формы добавления товара
+            const form = document.getElementById('addSneakerForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const messageDiv = document.getElementById('message');
+                
+                fetch('/admin/add_sneaker', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw err; });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    messageDiv.textContent = 'Товар успешно добавлен!';
+                    messageDiv.className = 'message success';
+                    
+                    // Очистка формы
+                    form.reset();
+                    
+                    // Обновление списка товаров
+                    loadProducts();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    messageDiv.textContent = error.error || 'Произошла ошибка при добавлении товара';
+                    messageDiv.className = 'message error';
+                });
+            });
+        });
+        
+        function loadProducts() {
+            const container = document.getElementById('productsContainer');
+            container.innerHTML = '<div class="loading">Загрузка товаров...</div>';
+            
+            fetch('/api/sneakers')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        container.innerHTML = `<div class="message error">${data.error}</div>`;
+                        return;
+                    }
+                    
+                    if (data.length === 0) {
+                        container.innerHTML = '<div class="message">Нет добавленных товаров</div>';
+                        return;
+                    }
+                    
+                    let html = '';
+                    data.forEach(product => {
+                        html += `
+                            <div class="product-item">
+                                <img src="${product.image_path}" alt="${product.brand} ${product.model}" class="product-image">
+                                <div class="product-info">
+                                    <div class="product-brand">${product.brand}</div>
+                                    <div class="product-model">${product.model}</div>
+                                    <div class="product-category">${product.category}</div>
+                                    <div class="product-price">${product.price.toFixed(2)} ₽</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    container.innerHTML = '<div class="message error">Ошибка при загрузке товаров</div>';
+                });
+        }
+    </script>
+</body>
+</html>
